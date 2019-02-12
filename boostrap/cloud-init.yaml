@@ -1,0 +1,20 @@
+#cloud-config
+disable_root: true
+timezone: Europe/Moscow
+repo_update: true
+repo_upgrade: all
+
+users:
+    - default
+
+runcmd:
+    - sleep 30
+    - [ sh, -c, "until ping -c1 www.centos.org &>/dev/null; do :; done" ]
+    - [ sh, -c, "until ping -c1 www.docker.com &>/dev/null; do :; done" ]
+    - [ sh, -c, "until ping -c1 www.google.com &>/dev/null; do :; done" ]
+    - [ sh, -c, "sudo yum clean all" ]
+    - [ sh, -c, "sudo yum update -y" ]
+    - [ sh, -c, "sudo yum install -y epel-release" ]
+    - [ sh, -c, "sudo yum install -y nginx" ]
+    - [ sh, -c, "sudo systemctl enable nginx &&  sudo systemctl start nginx" ]
+    - [ sh, -c, "sudo echo $(hostname | cut -d '.' -f 1 ) > /usr/share/nginx/html/index.html" ]
